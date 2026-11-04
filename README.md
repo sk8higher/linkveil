@@ -1,39 +1,128 @@
 # Linkveil
 
-TODO: Delete this and the text below, and describe your gem
+Linkveil is a lightweight Ruby gem that removes tracking parameters from shared URLs while preserving unrelated query parameters.
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/linkveil`. To experiment with that code, run `bin/console` for an interactive prompt.
+## Features
+
+- Remove platform-specific tracking parameters.
+- Preserve unrelated query parameters and their original encoding.
+- Support YouTube, Spotify, and TikTok.
+- Keep unknown domains unchanged.
+- Use Linkveil as a Ruby library or command-line tool.
+- Extend supported platforms with a simple sanitizer DSL.
 
 ## Installation
 
-TODO: Replace `UPDATE_WITH_YOUR_GEM_NAME_IMMEDIATELY_AFTER_RELEASE_TO_RUBYGEMS_ORG` with your gem name right after releasing it to RubyGems.org. Please do not do it earlier due to security reasons. Alternatively, replace this section with instructions to install your gem from git if you don't plan to release to RubyGems.org.
+Add Linkveil to your Gemfile:
 
-Install the gem and add to the application's Gemfile by executing:
-
-```bash
-bundle add UPDATE_WITH_YOUR_GEM_NAME_IMMEDIATELY_AFTER_RELEASE_TO_RUBYGEMS_ORG
+```ruby
+gem 'linkveil'
 ```
 
-If bundler is not being used to manage dependencies, install the gem by executing:
+Then run:
 
-```bash
-gem install UPDATE_WITH_YOUR_GEM_NAME_IMMEDIATELY_AFTER_RELEASE_TO_RUBYGEMS_ORG
+```sh
+bundle install
+```
+
+Or install it directly:
+
+```sh
+gem install linkveil
 ```
 
 ## Usage
 
-TODO: Write usage instructions here
+### Ruby API
+
+```ruby
+require 'linkveil'
+
+Linkveil.clean('https://youtu.be/abc?si=secret&t=120')
+# => "https://youtu.be/abc?t=120"
+
+Linkveil.clean('https://open.spotify.com/track/abc123?si=secret')
+# => "https://open.spotify.com/track/abc123"
+
+Linkveil.clean('https://example.com/?foo=bar')
+# => "https://example.com/?foo=bar"
+```
+
+### Command-line interface
+
+```sh
+linkveil 'https://youtu.be/abc?si=secret&t=120'
+```
+
+Output:
+
+```text
+https://youtu.be/abc?t=120
+```
+
+If no URL is provided, Linkveil prints usage instructions to stderr and exits with a non-zero status.
+
+**Windows note:** Depending on your shell and the RubyGems-generated `.bat` launcher, URLs containing `&` may require special handling. When developing from source, you can run:
+
+```powershell
+ruby exe/linkveil 'https://youtu.be/abc?si=secret&t=120'
+```
+
+## Supported platforms
+
+| Platform | Domains                     | Removed parameters                |
+| -------- | --------------------------- | --------------------------------- |
+| YouTube  | `youtube.com`, `youtu.be`   | `si`, `feature`                   |
+| Spotify  | `open.spotify.com`          | `si`                              |
+| TikTok   | `tiktok.com` and subdomains | `is_from_webapp`, `sender_device` |
+
+Linkveil only removes explicitly configured parameters. All other query parameters are preserved.
+
+## Adding a sanitizer
+
+Linkveil uses a small DSL to define platform-specific sanitizers.
+
+```ruby
+module Linkveil
+  module Sanitizers
+    class Example < Linkveil::Sanitizer
+      domains 'example.com'
+      remove_params 'tracking_id', 'ref'
+    end
+  end
+end
+```
+
+Each sanitizer declares the domains it supports and the query parameters it removes.
 
 ## Development
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+Clone the repository:
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and the created tag, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+```sh
+git clone https://github.com/sk8higher/linkveil.git
+cd linkveil
+bundle install
+```
+
+Run the test suite:
+
+```sh
+bundle exec rspec
+```
+
+Build the gem locally:
+
+```sh
+gem build linkveil.gemspec
+```
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/linkveil.
+Bug reports, suggestions, and pull requests are welcome.
+
+When adding support for a new platform, please include tests demonstrating that tracking parameters are removed and unrelated parameters are preserved.
 
 ## License
 
-The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
+Linkveil is available under the [MIT License](LICENSE.txt).
