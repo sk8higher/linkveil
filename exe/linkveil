@@ -3,11 +3,11 @@
 
 require_relative '../lib/linkveil'
 
-if ARGV.empty?
+url = ARGV.first
+
+if url.nil? || url.empty?
   warn 'Usage: linkveil <url>'
   exit 1
 end
-
-url = ARGV[0]
 
 puts Linkveil.clean(url)
