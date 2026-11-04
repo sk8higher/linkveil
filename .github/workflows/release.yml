@@ -54,10 +54,8 @@ jobs:
             --data-binary "$payload" \
             https://rubygems.org/api/v1/oidc/trusted_publisher/exchange_token)
 
-          if [[ "$http_code" != "200" ]]; then
+          if [[ "$http_code" != "200" && "$http_code" != "201" ]]; then
             echo "RubyGems OIDC exchange failed: HTTP $http_code"
-            jq -r '.error // .message // "No error message returned"' \
-              /tmp/rubygems-response.json
             exit 1
           fi
 
