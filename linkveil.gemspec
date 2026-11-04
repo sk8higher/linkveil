@@ -8,14 +8,13 @@ Gem::Specification.new do |spec|
   spec.authors = ['Nelly Simkova']
   spec.email = ['sk8high3r@ya.ru']
 
-  spec.summary = 'TODO: Write a short summary, because RubyGems requires one.'
-  spec.description = 'TODO: Write a longer description or delete this line.'
-  spec.homepage = "TODO: Put your gem's website or public repo URL here."
+  spec.summary = 'Remove tracking parameters from shared URLs'
+  spec.description = 'Linkveil is a lightweight Ruby gem that removes tracking parameters from URLs while preserving unrelated query parameters. It supports YouTube, Spotify, and TikTok, and provides a simple command-line interface.'
+  spec.homepage = 'https://github.com/sk8higher/linkveil'
   spec.license = 'MIT'
   spec.required_ruby_version = '>= 3.2.0'
-  spec.metadata['allowed_push_host'] = "TODO: Set to your gem server 'https://example.com'"
   spec.metadata['homepage_uri'] = spec.homepage
-  spec.metadata['source_code_uri'] = "TODO: Put your gem's public repo URL here."
+  spec.metadata['source_code_uri'] = spec.homepage
 
   # Uncomment the line below to require MFA for gem pushes.
   # This helps protect your gem from supply chain attacks by ensuring
