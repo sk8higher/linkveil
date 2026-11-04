@@ -8,7 +8,7 @@ module Linkveil
       attr_reader :registry
 
       def inherited(subclass)
-        registry << subclass
+        Linkveil::Sanitizer.registry << subclass
         super
       end
 
@@ -26,6 +26,22 @@ module Linkveil
         else
           @remove_params
         end
+      end
+
+      def find_for(host)
+        return nil if host.nil?
+
+        host = host.downcase
+
+        @registry.find do |sanitizer|
+          Array(sanitizer.domains).any? do |domain|
+            PlatformDetector.matches_domain?(host, domain)
+          end
+        end
+      end
+
+      def clean(uri)
+        QueryCleaner.clean(uri, remove: remove_params)
       end
     end
   end
