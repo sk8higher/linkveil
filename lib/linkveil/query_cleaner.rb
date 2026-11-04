@@ -3,13 +3,20 @@
 module Linkveil
   module QueryCleaner
     def self.clean(uri, remove:)
-      params = URI.decode_www_form(uri.query.to_s)
+      return uri.to_s if uri.query.nil?
 
-      rejected = params.reject { |key, _| remove.include?(key) }
+      fragments = uri.query.split('&', -1)
 
-      new_params = URI.encode_www_form(rejected)
-      uri.query = new_params.empty? ? nil : new_params
+      filtered = fragments.reject do |fragment|
+        key = fragment.partition('=').first
+        decoded_key = URI.decode_www_form_component(key)
 
+        remove.include?(decoded_key)
+      end
+
+      new_query = filtered.join('&')
+
+      uri.query = new_query.empty? ? nil : new_query
       uri.to_s
     end
   end

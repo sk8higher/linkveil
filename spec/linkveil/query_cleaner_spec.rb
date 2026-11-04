@@ -40,5 +40,17 @@ RSpec.describe Linkveil::QueryCleaner do
       expect(described_class.clean(uri, remove: ['si']))
         .to eq('https://example.com/?tag=a&tag=b')
     end
+
+    it 'preserves original encoding of untouched parameters' do
+      uri = URI.parse(
+        'https://youtu.be/abc?foo=hello%20world&si=secret&t=120'
+      )
+
+      expect(
+        described_class.clean(uri, remove: %w[si])
+      ).to eq(
+        'https://youtu.be/abc?foo=hello%20world&t=120'
+      )
+    end
   end
 end
