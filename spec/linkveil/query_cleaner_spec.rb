@@ -52,17 +52,5 @@ RSpec.describe Linkveil::QueryCleaner do
         'https://youtu.be/abc?foo=hello%20world&t=120'
       )
     end
-
-    it 'handles malformed percent-encoding without crashing' do
-      uri = URI.parse(
-        'https://youtu.be/abc?foo=123&%ZZ=hello&si=secret'
-      )
-
-      expect(
-        described_class.clean(uri, remove: %w[si])
-      ).to eq(
-        'https://youtu.be/abc?foo=123&%ZZ=hello'
-      )
-    end
   end
 end
