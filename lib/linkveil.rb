@@ -2,19 +2,22 @@
 
 require 'uri'
 require_relative 'linkveil/version'
+require_relative 'linkveil/query_cleaner'
+require_relative 'linkveil/platform_detector'
+
+require_relative 'linkveil/sanitizer'
+require_relative 'linkveil/sanitizers/youtube'
 
 module Linkveil
   def self.clean(url)
     uri = URI.parse(url)
-    params = URI.decode_www_form(uri.query.to_s)
+    platform = PlatformDetector.detect(uri.host)
 
-    rejected = params.reject do |key, _value|
-      key == 'si'
+    case platform
+    when :youtube
+      QueryCleaner.clean(uri, remove: ['si'])
+    else
+      uri.to_s
     end
-
-    new_params = URI.encode_www_form(rejected)
-    uri.query = new_params.empty? ? nil : new_params
-
-    uri.to_s
   end
 end
