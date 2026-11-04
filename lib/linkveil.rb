@@ -11,13 +11,10 @@ require_relative 'linkveil/sanitizers/youtube'
 module Linkveil
   def self.clean(url)
     uri = URI.parse(url)
-    platform = PlatformDetector.detect(uri.host)
+    sanitizer = Sanitizer.find_for(uri.host)
 
-    case platform
-    when :youtube
-      QueryCleaner.clean(uri, remove: ['si'])
-    else
-      uri.to_s
-    end
+    return url if sanitizer.nil?
+
+    sanitizer.clean(uri)
   end
 end
