@@ -1,0 +1,74 @@
+name: Release
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    environment: release
+
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "4.0"
+          bundler-cache: true
+
+      - name: Authenticate with RubyGems
+        shell: bash
+        env:
+          RUBYGEMS_OWNER: "197318"
+        run: |
+          set -euo pipefail
+
+          : "${ACTIONS_ID_TOKEN_REQUEST_URL:?Missing OIDC URL}"
+          : "${ACTIONS_ID_TOKEN_REQUEST_TOKEN:?Missing OIDC token}"
+
+          oidc_response=$(curl --fail-with-body -sS \
+            -H "Authorization: Bearer ${ACTIONS_ID_TOKEN_REQUEST_TOKEN}" \
+            "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=rubygems.org")
+
+          jwt=$(jq -er '.value' <<< "$oidc_response")
+
+          payload=$(jq -n \
+            --arg jwt "$jwt" \
+            --arg owner "$RUBYGEMS_OWNER" \
+            '{jwt: $jwt, owner: $owner}')
+
+          http_code=$(curl -sS \
+            -o /tmp/rubygems-response.json \
+            -w '%{http_code}' \
+            -H 'Content-Type: application/json' \
+            -H 'Accept: application/json' \
+            --data-binary "$payload" \
+            https://rubygems.org/api/v1/oidc/trusted_publisher/exchange_token)
+
+          if [[ "$http_code" != "200" ]]; then
+            echo "RubyGems OIDC exchange failed: HTTP $http_code"
+            jq -r '.error // .message // "No error message returned"' \
+              /tmp/rubygems-response.json
+            exit 1
+          fi
+
+          response=$(cat /tmp/rubygems-response.json)
+
+          key=$(jq -er '.rubygems_api_key' <<< "$response")
+          echo "::add-mask::$key"
+          echo "GEM_HOST_API_KEY=$key" >> "$GITHUB_ENV"
+
+      - name: Build gem
+        run: gem build linkveil.gemspec
+
+      - name: Publish gem
+        run: gem push linkveil-0.1.0.gem
