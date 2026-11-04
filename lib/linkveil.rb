@@ -7,6 +7,7 @@ require_relative 'linkveil/platform_detector'
 
 require_relative 'linkveil/sanitizer'
 require_relative 'linkveil/sanitizers/youtube'
+require_relative 'linkveil/sanitizers/spotify'
 
 module Linkveil
   def self.clean(url)

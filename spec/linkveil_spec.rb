@@ -28,6 +28,14 @@ RSpec.describe Linkveil do
           'https://www.youtube.com/watch?v=abc123'
         )
       end
+
+      it 'cleans Spotify URLs' do
+        url = 'https://open.spotify.com/track/abc123?si=secret'
+
+        expect(Linkveil.clean(url)).to eq(
+          'https://open.spotify.com/track/abc123'
+        )
+      end
     end
   end
 end
