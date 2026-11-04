@@ -9,6 +9,7 @@ GEM
     ast (2.4.3)
     diff-lcs (1.6.2)
     erb (6.0.7)
+    fiddle (1.1.8)
     io-console (0.9.5)
     irb (1.18.0)
       pp (>= 0.6.0)
@@ -78,6 +79,7 @@ PLATFORMS
   x64-mingw-ucrt
 
 DEPENDENCIES
+  fiddle
   irb
   linkveil!
   rake (~> 13.0)
@@ -88,6 +90,7 @@ CHECKSUMS
   ast (2.4.3) sha256=954615157c1d6a382bc27d690d973195e79db7f55e9765ac7c481c60bdb4d383
   diff-lcs (1.6.2) sha256=9ae0d2cba7d4df3075fe8cd8602a8604993efc0dfa934cff568969efb1909962
   erb (6.0.7) sha256=c5ca6dc25b0ef974a44dc8f59fe847577122483b1968a38dec305c60bf91ee92
+  fiddle (1.1.8) sha256=7fa8ee3627271497f3add5503acdbc3f40b32f610fc1cf49634f083ef3f32eee
   io-console (0.9.5) sha256=83dd9bbf4c4680416629245b39cd4212eb5f4d9a4ea91804870c1f6b846414d5
   irb (1.18.0) sha256=de9454a0703a54704b9811a5ef31a60c86949fbf4013fcf244fabc7c775248e3
   json (2.21.2) sha256=1f1d3b7cf2b3ba1a69beca0bb6db13d5438b80bff3cd54cdaaa620b9b07c1c6a
