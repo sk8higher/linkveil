@@ -13,3 +13,5 @@ gem 'rspec', '~> 3.0'
 gem 'rubocop', '~> 1.74', require: false
 
 gem 'fiddle'
+
+gem 'rdoc', '< 8.0'
