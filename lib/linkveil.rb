@@ -1,8 +1,20 @@
 # frozen_string_literal: true
 
-require_relative "linkveil/version"
+require 'uri'
+require_relative 'linkveil/version'
 
 module Linkveil
-  class Error < StandardError; end
-  # Your code goes here...
+  def self.clean(url)
+    uri = URI.parse(url)
+    params = URI.decode_www_form(uri.query.to_s)
+
+    rejected = params.reject do |key, _value|
+      key == 'si'
+    end
+
+    new_params = URI.encode_www_form(rejected)
+    uri.query = new_params.empty? ? nil : new_params
+
+    uri.to_s
+  end
 end
