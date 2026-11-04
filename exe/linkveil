@@ -1,0 +1,13 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require_relative '../lib/linkveil'
+
+if ARGV.empty?
+  warn 'Usage: linkveil <url>'
+  exit 1
+end
+
+url = ARGV[0]
+
+puts Linkveil.clean(url)
