@@ -12,10 +12,13 @@ require_relative 'linkveil/sanitizers/spotify'
 module Linkveil
   def self.clean(url)
     uri = URI.parse(url)
+
     sanitizer = Sanitizer.find_for(uri.host)
 
     return url if sanitizer.nil?
 
     sanitizer.clean(uri)
+  rescue URI::InvalidURIError
+    url
   end
 end
