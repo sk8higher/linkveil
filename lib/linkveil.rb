@@ -9,6 +9,7 @@ require_relative 'linkveil/sanitizer'
 require_relative 'linkveil/sanitizers/youtube'
 require_relative 'linkveil/sanitizers/spotify'
 require_relative 'linkveil/sanitizers/tiktok'
+require_relative 'linkveil/sanitizers/instagram'
 
 module Linkveil
   def self.clean(url)
